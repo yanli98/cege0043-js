@@ -162,6 +162,32 @@ function answerUploaded(){
 	}
 }
 
+// user is told how many questions they have answered correctly when they answer a question
+var xhrNumCorrectAns; // define a global variable to process AJAX request
+// AJAX request to get total numbers of the correct answer 
+function getCorrectAnsNum(){
+	xhrNumCorrectAns = new XMLHttpRequest();
+	var url = "http://developer.cege.ucl.ac.uk:"+httpPortNumber;
+	url = url + "/getCorrectAnsNum/"+httpPortNumber;
+	xhrNumCorrectAns.open("GET", url, true);
+	xhrNumCorrectAns.onreadystatechange = ansNumResponse;
+	xhrNumCorrectAns.send();
+}
+// AJAX response to get total numbers of the correct answer 
+function ansNumResponse(){
+	if (xhrNumCorrectAns.readyState == 4) {
+		// 4 = response from server completely loaded.
+		var correctNumString = xhrNumCorrectAns.responseText;
+		// convert the text received from the server to JSON
+		var correctNumData="";
+		for (var i = 1; i <correctNumString.length-1; i++) {
+			correctNumData=correctNumData+correctNumString[i];
+		}
+		var ansNumJSON = JSON.parse(correctNumData);
+		alert("You have correctly answered "+ ansNumJSON.array_to_json[0].num_questions + " questions so far.");
+	}
+}
+
 // create markers
 var redMarker = L.AwesomeMarkers.icon({
 	icon: 'play',
