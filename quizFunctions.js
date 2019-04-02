@@ -103,7 +103,37 @@ function checkAnswer(questionID){
 	
 	// now close the popup 
 	mymap.closePopup();
+	// finally upload the answer calling an AJAX routine
+	uploadAnswer(postString);
 }
+
+// define global variables to process AJAX request 
+var xhrQuizAns;
+// AJAX request to upload answers
+function uploadAnswer(postString){
+	xhrQuizAns = new XMLHttpRequest();
+	postString = postString + "&port_id=" + httpPortNumber;
+	var url = "http://developer.cege.ucl.ac.uk:" + httpPortNumber + "/uploadAnswer";
+	xhrQuizAns.open("POST", url, true);
+	xhrQuizAns.onreadystatechange = answerUploaded;
+	try {
+		xhrQuizAns.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	}
+	catch (e) {
+		// this only works in internet explorer
+	}
+	xhrQuizAns.send(postString);
+	alert(postString)
+}
+// AJAX reponse for uploading answers
+function answerUploaded(){	
+	if (xhrQuizAns.readyState === 4){
+		// once the data is ready, process the data
+		// show response in DIV to check if answer uploaded
+		document.getElementById("dataUploadResult").innerHTML = xhrQuizAns.responseText;
+	}
+}
+
 
 // create markers
 var redMarker = L.AwesomeMarkers.icon({
