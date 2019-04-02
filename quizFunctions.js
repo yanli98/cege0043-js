@@ -188,6 +188,32 @@ function ansNumResponse(){
 	}
 }
 
+// user is given their ranking (in comparison to all other users) (as a menu option) 
+var xhrUserRanking; // define a global variable to process AJAX request
+// AJAX request to get user ranking
+function getRanking(){
+	xhrUserRanking = new XMLHttpRequest();
+	var url = "http://developer.cege.ucl.ac.uk:"+httpPortNumber;
+	url = url + "/getRanking/"+httpPortNumber;
+	xhrUserRanking.open("GET", url, true);
+	xhrUserRanking.onreadystatechange = rankingResponse;
+	xhrUserRanking.send();
+}
+// AJAX response to get user ranking
+function rankingResponse(){
+	if (xhrUserRanking.readyState == 4) {
+		// 4 = response from server completely loaded.
+		var rankingString = xhrUserRanking.responseText;
+		// convert the text received from the server to JSON 
+		var rankingData="";
+		for (var i = 1; i <rankingString.length-1; i++) {
+			rankingData=rankingData+rankingString[i];
+		}
+		var rankingJSON = JSON.parse(rankingData);
+		alert("Your current ranking is: "+ rankingJSON.array_to_json[0].rank + ".");
+	}
+}
+
 // create markers
 var redMarker = L.AwesomeMarkers.icon({
 	icon: 'play',
