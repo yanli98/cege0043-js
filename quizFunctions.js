@@ -75,6 +75,38 @@ function loadQuizPointsLayer(quizPoints){
 	mymap.fitBounds(QuizLayer.getBounds());
 }
 
+// add a method to process the button click in this pop-up
+// use this to submit the answers to the server
+function checkAnswer(questionID){
+	// get the answer from the hidden div
+	// NB - do this BEFORE you close the pop-up as when you close the pop-up the DIV is destroyed
+	var answer = document.getElementById("answer"+questionID).innerHTML;
+	// now check the question radio buttons
+	var correctAnswer = false;
+	var answerSelected = 0;
+	var postString = "&question_id=" + questionID;
+	
+	for (var i=1; i<5; i++){
+		if (document.getElementById(questionID + " " + i).checked){
+			answerSelected = 1;
+			postString = postString + "&answer_selected=" + i;
+			
+		}
+	if ((document.getElementById(questionID+ " " + i).checked) && (i == answer)){
+			alert("Well done");
+			correctAnswer = true;
+			postString = postString + "&correct_answer=" + i;
+		}
+	}
+	if (correctAnswer === false){
+		postString = postString + "&correct_answer="+answer
+		alert("Better luck next time");
+	}		
+	
+	// now close the popup 
+	mymap.closePopup();
+}
+
 // create markers
 var redMarker = L.AwesomeMarkers.icon({
 	icon: 'play',
