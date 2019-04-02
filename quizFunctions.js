@@ -73,6 +73,24 @@ function loadQuizPointsLayer(quizPoints){
 	mymap.fitBounds(QuizLayer.getBounds());
 }
 
+// quiz points will pop up automatically if user is within the proximity distance
+// proximity distance is 30 metre
+function alertQuizPoint(position){
+	var alertDist = 0.03;
+	QuizLayer.eachLayer(function(layer){
+		var distance = calculateDistance(userlat, userlng, layer.getLatLng().lat, layer.getLatLng().lng, 'K');
+		if (distance < alertDist){
+			alertPoint = layer.feature.properties.id; // find quiz points within the alert distance first
+		}
+	});
+	// pop up quiz points
+	QuizLayer.eachLayer(function(layer){
+		if (layer.feature.properties.id == alertPoint){
+			layer.openPopup();
+		}
+	});
+}
+
 // add a method to process the button click in this pop-up
 // use this to submit the answers to the server
 function checkAnswer(questionID){
