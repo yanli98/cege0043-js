@@ -4,7 +4,6 @@ var popup = L.popup();
 var latitude;
 var longitude;
 
-
 // get coordinates automatically when user clicks on a point
 function getCoords(e){
 	popup.setLatLng(e.latlng);
@@ -24,38 +23,53 @@ mymap.on('click', getCoords);
 
 // convert form to string
 function startQuestionUpload(){
-	// get coordinates
-	alert("Start upload data");
-	var postString = "&latitude=" + latitude + "&longitude=" + longitude;
+	// error message pops up if
+	// 1. user doesn't fill requried fields
+	// 2. user doesn't type in 1/2/3/4 for the correct answer
+	// 3. coordinate missed
+	try {
+		alert("Start upload data");
+		var postString = "&latitude=" + latitude + "&longitude=" + longitude;
+		if (latitude == undefined || longitude == undefined) throw "Please select a point on the map first."
 	
-	// get question title
-	var question_title = document.getElementById("question_title").value;
-	postString = postString + "&question_title=" + question_title;
+		// get question title
+		var question_title = document.getElementById("question_title").value;
+		if (question_title == "") throw "Please enter the question title.";
+			postString = postString + "&question_title=" + question_title;
 	
-	// get question text
-	var question_text = document.getElementById("question_text").value;
-	postString = postString + "&question_text=" + question_text;
+		// get question text
+		var question_text = document.getElementById("question_text").value;
+		if (question_text == "") throw "Please enter the question text.";	
+		postString = postString + "&question_text=" + question_text;
 	
-	// get options
-	var answer_1 = document.getElementById("answer_1").value;
-	postString = postString + "&answer_1=" + answer_1;
-	var answer_2 = document.getElementById("answer_2").value;
-	postString = postString + "&answer_2=" + answer_2;
-	var answer_3 = document.getElementById("answer_3").value;
-	postString = postString + "&answer_3=" + answer_3;
-	var answer_4 = document.getElementById("answer_4").value;
-	postString = postString + "&answer_4=" + answer_4;
+		// get four options
+		var answer_1 = document.getElementById("answer_1").value;
+		postString = postString + "&answer_1=" + answer_1;
+		var answer_2 = document.getElementById("answer_2").value;
+		postString = postString + "&answer_2=" + answer_2;
+		var answer_3 = document.getElementById("answer_3").value;
+		postString = postString + "&answer_3=" + answer_3;
+		var answer_4 = document.getElementById("answer_4").value;
+		postString = postString + "&answer_4=" + answer_4;
 	
-	// get correct answer
-	var correct_answer = document.getElementById("correct_answer").value;
-	postString = postString + "&correct_answer=" + correct_answer;	
-	
-	alert (postString)
-	processData(postString);
+		if (answer_1 == "" || answer_2 == "" || answer_3 == "" || answer_4 == "") throw "Please enter four answer options."
+
+		// get the correct answer
+		var correct_answer = document.getElementById("correct_answer").value;
+		postString = postString + "&correct_answer=" + correct_answer;
+		
+		if (correct_answer != "1" && correct_answer != "2" && correct_answer != "3" && correct_answer != "4") throw "Please enter the correct option (1, 2, 3, or 4)."
+		
+		alert (postString)
+		processData(postString);
+	}
+	catch(err){
+		alert(err);
+	}	
 }
 
 // define global variables to process AJAX request
-var client;
+var client; 
 // AJAX request to upload data
 function processData(postString){
 	client = new XMLHttpRequest();
