@@ -108,17 +108,27 @@ function checkAnswer(questionID){
 			postString = postString + "&answer_selected=" + i;
 			
 		}
-	if ((document.getElementById(questionID+ " " + i).checked) && (i == answer)){
+		if ((document.getElementById(questionID+ " " + i).checked) && (i == answer)){
 			alert("Well done");
 			correctAnswer = true;
+			QuizLayer.eachLayer(function(layer){
+				if (layer.feature.properties.id == questionID){
+					return L.marker([layer.getLatLng().lat, layer.getLatLng().lng], {icon: greenMarker}).addTo(mymap); // if answer is correct, using green marker
+				}
+			})
 			postString = postString + "&correct_answer=" + i;
 		}
 	}
 	if (correctAnswer === false){
+		// they didn't get it right 
 		postString = postString + "&correct_answer="+answer
 		alert("Better luck next time");
-	}		
-	
+		QuizLayer.eachLayer(function(layer){
+			if (layer.feature.properties.id == questionID){
+				return L.marker([layer.getLatLng().lat, layer.getLatLng().lng], {icon: redMarker}).addTo(mymap); // if answer is false, using red marker
+			}
+		})
+	}
 	// now close the popup 
 	mymap.closePopup();
 	// finally upload the answer calling an AJAX routine
@@ -151,7 +161,6 @@ function answerUploaded(){
 		document.getElementById("dataUploadResult").innerHTML = xhrQuizAns.responseText;
 	}
 }
-
 
 // create markers
 var redMarker = L.AwesomeMarkers.icon({
