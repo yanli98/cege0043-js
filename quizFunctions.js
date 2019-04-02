@@ -7,10 +7,10 @@ var QuizLayer; // store quiz points
 
 function loadQuizPoints() 
 {
+	getPort();
 	alert("All Quiz Points will be loaded");
 	getQuizPoints();
 }
-getPort();
 
 // AJAX request to load quiz points
 function getQuizPoints(){
@@ -62,12 +62,10 @@ function loadQuizPointsLayer(quizPoints){
 			htmlString = htmlString + "<button onclick='checkAnswer(" + feature.properties.id + "); return false;'> Submit Answer</button>";
 			// now include a hidden element with the answer
 			// in this case the answer is alwasy the first choice
-			// for the assignment this will use feature.properties.correct_answer
+			// for the assignment this will use feature.properties.correct_answer	
 			htmlString = htmlString + "<div id=answer" + feature.properties.id + " hidden>" + feature.properties.correct_answer + "</div>";
 			htmlString = htmlString + "</div>";
-			L.marker(latlng).addTo(mymap).on('click', function(e){
-			document.getElementById("questionDiv").innerHTML = htmlString;
-			});
+			return L.marker(latlng, {icon: blueMarker}).bindPopup(htmlString);
 			}					
 	}).addTo(mymap);
 	
