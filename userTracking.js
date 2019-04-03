@@ -7,21 +7,20 @@ var userlng;
 function trackLocation() {
 	if(navigator.geolocation){
 		navigator.geolocation.watchPosition(showPosition);
-		alert("Loading Current Location");
+		alert("Closest quiz pop-up updates very frequently. Please choose an answer and submit it before update.");
 	}
 	else {
 		document.getElementById('showLocation').innerHTML = "Geolocation is not supported by this browser.";}
 }
 
 function showPosition(position){
-	setTimeout("userlat = position.coords.latitude", 5000);
 	if (userMarker){
 		mymap.removeLayer(userMarker);
 	}
 	userlat = position.coords.latitude
 	userlng = position.coords.longitude
     userMarker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap).bindPopup("You are here!").openPopup();
-	alertQuizPoint(position); // pop up quiz point that is closest to the user within the proximity distance.
+	alertQuizPoint(position);// pop up quiz point that is closest to the user within the proximity distance.
 }
 
 // code adapted from https://www.htmlgoodies.com/beyond/javascript/calculate-the-distance-between-two-points-inyour-web-apps.html
