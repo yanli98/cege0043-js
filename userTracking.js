@@ -3,23 +3,6 @@ var userMarker;
 var userlat;
 var userlng;
 
-//zoom on user's location
-function zoomOnMap(){
-	if(navigator.geolocation){
-		alert('Zooming onto your position')
-		navigator.geolocation.getCurrentPosition(getPosition);
-	} 
-	else{
-		alert('Geolocation is not supported by this browser.');
-	}
-}
-
-//set zooming scale
-function getPosition(position){
-	mymap.setView([position.coords.latitude, position.coords.longitude], 15);
-}
-
-
 // Function to show location
 function trackLocation() {
 	if(navigator.geolocation){
@@ -31,14 +14,14 @@ function trackLocation() {
 }
 
 function showPosition(position){
+	setTimeout("userlat = position.coords.latitude", 5000);
 	if (userMarker){
 		mymap.removeLayer(userMarker);
 	}
 	userlat = position.coords.latitude
 	userlng = position.coords.longitude
     userMarker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(mymap).bindPopup("You are here!").openPopup();
-    mymap.locate({setView: true, maxZoom: 16});
-	alertQuizPoint(position); // automatic question pop-up for closest quiz point that is within 10 metre of user* + see proximityAlert.js
+	alertQuizPoint(position); // pop up quiz point that is closest to the user within the proximity distance.
 }
 
 // code adapted from https://www.htmlgoodies.com/beyond/javascript/calculate-the-distance-between-two-points-inyour-web-apps.html
@@ -54,7 +37,7 @@ function calculateDistance(lat1, lon1, lat2, lon2, unit){
 	subAngle = subAngle * 180/Math.PI; // degrees - radians
 	dist = (subAngle/360) * 2 * Math.PI * 3956; // ((subtended angle in degrees)/360) * 2 * pi * radius )
 	// radius of the earth - 3956 miles
-	if (unit=="K") { dist = dist * 1.609344 ;} // convert miles to km
-	if (unit=="N") { dist = dist * 0.8684 ;} // convert miles to nautical miles
+	if (unit=="K") { dist = dist * 1.609344 ;} // miles to km
+	if (unit=="N") { dist = dist * 0.8684 ;} // miles to nautical miles
 	return dist;
 }
